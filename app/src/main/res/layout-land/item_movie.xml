@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/ivPoster"
         android:layout_width="350dp"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:layout_margin="5dp"
         android:layout_centerVertical="true"
         android:elevation="4dp"
