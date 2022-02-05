@@ -1,46 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="12dp">
-
-    <ImageView
-        android:id="@+id/ivPoster"
-        android:layout_width="350dp"
-        android:layout_height="200dp"
-        android:layout_margin="5dp"
-        android:layout_centerVertical="true"
-        android:elevation="4dp"
-        android:background="@drawable/rounded_corners"
-        android:contentDescription="@string/movie_poster_content_description" />
-
-    <TextView
-        android:id="@+id/tvMovieTitle"
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:layout_margin="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:maxLines="1"
-        android:layout_toEndOf="@+id/ivPoster"
-        app:autoSizeTextType="uniform"
-
-        android:textColor="@color/white"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/tvMovieOverview"
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable name="movie" type="com.example.flixster.models.Movie"/>
+    </data>
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvMovieTitle"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_toEndOf="@+id/ivPoster"
+        android:layout_margin="12dp"
+        android:id="@+id/movieItemContainer">
 
-        android:textColor="@color/secondary_white"
-        android:textSize="14.5sp"
-        android:lines="6"
-        android:ellipsize="end"/>
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/ivPoster"
+            android:layout_width="350dp"
+            android:layout_height="200dp"
+            android:layout_margin="5dp"
+            android:layout_centerVertical="true"
+            android:elevation="4dp"
+            android:contentDescription="@string/movie_poster_content_description" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvMovieTitle"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_margin="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:maxLines="1"
+            android:layout_toEndOf="@+id/ivPoster"
+            app:autoSizeTextType="uniform"
+            android:text="@{movie.title}"
+
+            android:textColor="@color/white"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tvMovieOverview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvMovieTitle"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_toEndOf="@+id/ivPoster"
+            android:text="@{movie.overview}"
+
+            android:textColor="@color/secondary_white"
+            android:textSize="14.5sp"
+            android:lines="6"
+            android:ellipsize="end"/>
+    </RelativeLayout>
+</layout>

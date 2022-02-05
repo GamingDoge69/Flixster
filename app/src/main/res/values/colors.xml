@@ -9,4 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="secondary_white">#dadee3</color>
     <color name="background">#424549</color>
+    <color name="hollywood_gold">#cbac56</color>
+    <color name="average_movie_teal">#4DA8A2</color>
+    <color name="terrible_movie_red">#dc143c</color>
 </resources>

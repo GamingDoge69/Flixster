@@ -1,6 +1,7 @@
 package com.example.flixster;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,13 +12,16 @@ import android.util.Log;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.flixster.adapters.MainFeedMoviesAdapter;
+import com.example.flixster.databinding.ActivityMainBinding;
 import com.example.flixster.models.Movie;
+import com.example.flixster.utils.GenresHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import okhttp3.Headers;
@@ -27,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String GET_MOVIE_NOW_PLAYING_URL = "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
     private static final String TAG = "MainActivity";
 
+    ActivityMainBinding binding;
+
     List<Movie> mainFeedMovies = new ArrayList<>();
     RecyclerView rvMainFeedMovies;
 
@@ -35,12 +41,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        rvMainFeedMovies = findViewById(R.id.rvMainFeedMovies);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        rvMainFeedMovies = binding.rvMainFeedMovies;
 
         MainFeedMoviesAdapter mainFeedMoviesAdapter = new MainFeedMoviesAdapter(this, mainFeedMovies);
         rvMainFeedMovies.setAdapter(mainFeedMoviesAdapter);
         rvMainFeedMovies.setLayoutManager(new LinearLayoutManager(this));
 
+        GenresHelper.prepareAllGenres();
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(GET_MOVIE_NOW_PLAYING_URL, new JsonHttpResponseHandler() {
@@ -54,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray movieResultsJsonArray = jsonObject.getJSONArray("results");
                     mainFeedMovies.clear();
                     mainFeedMovies.addAll(Movie.fromJSONArray(movieResultsJsonArray));
+
+                    // Ensure most popular movies at the top
+                    Collections.sort(mainFeedMovies, Collections.reverseOrder());
+
                     mainFeedMoviesAdapter.notifyDataSetChanged();
                     Log.i(TAG, "onSuccess: MainFeedMovies Loaded");
                 } catch (JSONException e) {

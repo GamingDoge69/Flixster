@@ -1,22 +1,32 @@
 package com.example.flixster.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
-import androidx.core.widget.TextViewCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.FitCenter;
+import com.example.flixster.DetailActivity;
 import com.example.flixster.R;
+import com.example.flixster.databinding.ItemMovieBinding;
 import com.example.flixster.models.Movie;
 
+import org.parceler.Parcels;
+
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class MainFeedMoviesAdapter extends RecyclerView.Adapter<MainFeedMoviesAdapter.ViewHolder>{
 
@@ -48,34 +58,47 @@ public class MainFeedMoviesAdapter extends RecyclerView.Adapter<MainFeedMoviesAd
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        ItemMovieBinding binding;
 
+        RelativeLayout container;
         ImageView ivPoster;
-        TextView tvTitle;
-        TextView tvOverview;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivPoster = itemView.findViewById(R.id.ivPoster);
+            binding = ItemMovieBinding.bind(itemView);
+            container = binding.movieItemContainer;
+            ivPoster = binding.ivPoster;
 
-            // Ensure Rounded Corners are respected
-            ivPoster.setClipToOutline(true);
-
-            tvTitle = itemView.findViewById(R.id.tvMovieTitle);
-            tvOverview = itemView.findViewById(R.id.tvMovieOverview);
         }
 
 
         public void bind(Movie movieData) {
-            tvTitle.setText(movieData.getTitle());
-            tvOverview.setText(movieData.getOverview());
+            binding.setMovie(movieData);
+            binding.executePendingBindings();
             Glide.with(context)
                     .load(
-                            context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT?
-                            movieData.getPosterPath(): movieData.getBackdropPath())
+                            context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ?
+                                    movieData.getPosterPath() : movieData.getBackdropPath())
+                    .transform(new FitCenter(), new RoundedCornersTransformation(16, 0))
                     .placeholder(R.drawable.loading)
-                    .fitCenter()
                     .into(ivPoster);
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(context, DetailActivity.class);
+
+                    Pair<View, String> titlePair = new Pair<>(binding.tvMovieTitle, "movieTitle");
+                    Pair<View, String> overviewPair = new Pair<>(binding.tvMovieOverview, "movieOverview");
+
+                    ActivityOptionsCompat options = ActivityOptionsCompat.
+                            makeSceneTransitionAnimation((Activity) context, titlePair, overviewPair);
+
+                    i.putExtra("MovieData", Parcels.wrap(movieData));
+
+                    context.startActivity(i, options.toBundle());
+                }
+            });
         }
     }
 }
