@@ -39,11 +39,10 @@ public class DetailActivity extends YouTubeBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
 
         movieData = Parcels.unwrap(getIntent().getParcelableExtra("MovieData"));
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
         binding.setMovie(movieData);
         setRatingBarColor(movieData.getRatingDisplayColor());
 
